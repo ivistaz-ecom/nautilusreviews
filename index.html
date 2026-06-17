@@ -397,6 +397,12 @@ function updateSections() {
               placeholder="Optional — a particular interaction that stood out…"
               style="min-height:65px;"></textarea>
           </div>
+          <div class="form-row">
+            <label>Any other feedback for our staff of Nautilus? (Optional)</label>
+            <textarea id="txt_${s.id}_other"
+              placeholder="Optional — any additional comments or suggestions…"
+              style="min-height:65px;"></textarea>
+          </div>
         </div>`;
       sectionsDiv.appendChild(sec);
     }
@@ -443,6 +449,7 @@ async function submitForm() {
     const well     = (document.getElementById(`txt_${s.id}_well`)?.value     || '').trim();
     const improve  = (document.getElementById(`txt_${s.id}_improve`)?.value  || '').trim();
     const incident = (document.getElementById(`txt_${s.id}_incident`)?.value || '').trim();
+    const other    = (document.getElementById(`txt_${s.id}_other`)?.value    || '').trim();
 
     if (!r1||!r2||!r3||!r4||!r5) {
       return showNotice(`Please complete all 5 ratings for ${s.full_name}.`, 'error');
@@ -463,7 +470,8 @@ async function submitForm() {
       rating_overall         : r5,
       what_did_well          : well,
       areas_to_improve       : improve,
-      specific_incident      : incident
+      specific_incident      : incident,
+      other_feedback         : other
     });
   }
 
@@ -617,6 +625,9 @@ async function loadReview() {
           ${r.specific_incident
             ? `<div class="qual-q">Specific incident</div><div class="qual-a">"${esc(r.specific_incident)}"</div>`
             : ''}
+          ${r.other_feedback
+            ? `<div class="qual-q">Other feedback for Nautilus staff</div><div class="qual-a">"${esc(r.other_feedback)}"</div>`
+            : ''}
         </div>
       </div>`;
     }).join('');
@@ -636,7 +647,7 @@ function exportCSV() {
   const headers = [
     'Ref No','Form','Vessel','Rank','Staff Name','Staff Role','Date',
     'Responsiveness','Problem Resolution','Professionalism','Knowledge','Overall','Avg Score',
-    'What They Did Well','Areas to Improve','Specific Incident'
+    'What They Did Well','Areas to Improve','Specific Incident','Other Feedback'
   ];
   const rows = allReviewData.map(r => [
     r.reg_no, r.form_code, r.vessel, r.seafarer_rank,
@@ -645,7 +656,7 @@ function exportCSV() {
     r.rating_responsiveness, r.rating_resolution,
     r.rating_professionalism, r.rating_knowledge, r.rating_overall,
     parseFloat(r.avg_score).toFixed(2),
-    r.what_did_well, r.areas_to_improve || '', r.specific_incident || ''
+    r.what_did_well, r.areas_to_improve || '', r.specific_incident || '', r.other_feedback || ''
   ].map(v => `"${String(v).replace(/"/g,'""')}"`));
 
   const csv  = [headers.map(h => `"${h}"`), ...rows].map(r => r.join(',')).join('\n');

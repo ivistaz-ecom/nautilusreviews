@@ -98,6 +98,7 @@ function handleGetStaff(): void
  *       "what_did_well"          : "Always reachable.",
  *       "areas_to_improve"       : "",
  *       "specific_incident"      : ""
+ *       "other_feedback"         : ""
  *     }
  *   ]
  * }
@@ -195,11 +196,11 @@ function handleSubmit(): void
               (submission_id, staff_id,
                rating_responsiveness, rating_resolution,
                rating_professionalism, rating_knowledge, rating_overall,
-               what_did_well, areas_to_improve, specific_incident)
+               what_did_well, areas_to_improve, specific_incident, other_feedback)
             VALUES
               (:sub_id, :staff_id,
                :r1, :r2, :r3, :r4, :r5,
-               :well, :improve, :incident)
+               :well, :improve, :incident, :other)
         ");
 
         foreach ($staffRatings as $sr) {
@@ -214,6 +215,7 @@ function handleSubmit(): void
                 ':well'     => trim($sr['what_did_well']),
                 ':improve'  => trim($sr['areas_to_improve']  ?? ''),
                 ':incident' => trim($sr['specific_incident'] ?? ''),
+                ':other'    => trim($sr['other_feedback']    ?? ''),
             ]);
         }
 
@@ -257,7 +259,7 @@ function handleGetResponses(?string $regNo): void
                    ROUND((r.rating_responsiveness + r.rating_resolution +
                           r.rating_professionalism + r.rating_knowledge +
                           r.rating_overall) / 5, 2) AS avg_score,
-                   r.what_did_well, r.areas_to_improve, r.specific_incident
+                   r.what_did_well, r.areas_to_improve, r.specific_incident, r.other_feedback
             FROM   responses   r
             JOIN   submissions s  ON s.id         = r.submission_id
             JOIN   staff       st ON st.id        = r.staff_id
@@ -321,7 +323,7 @@ function handleGetResponses(?string $regNo): void
                ROUND((r.rating_responsiveness + r.rating_resolution +
                       r.rating_professionalism + r.rating_knowledge +
                       r.rating_overall) / 5, 2) AS avg_score,
-               r.what_did_well, r.areas_to_improve, r.specific_incident
+               r.what_did_well, r.areas_to_improve, r.specific_incident, r.other_feedback
         FROM   responses   r
         JOIN   submissions s  ON s.id        = r.submission_id
         JOIN   staff       st ON st.id       = r.staff_id
