@@ -496,11 +496,7 @@ async function submitForm() {
     document.getElementById('individual-sections').innerHTML = '';
     document.getElementById('sections-container').style.display = 'none';
 
-    showNotice(
-      `✓ Feedback submitted for ${data.rated_staff_count} staff member${data.rated_staff_count > 1 ? 's' : ''}.
-       Your reference number: <span class="reg-badge">${esc(data.reg_no)}</span> — Thank you!`,
-      'success'
-    );
+    showNotice('Thank you for your feedback.', 'success');
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
   } catch (e) {
