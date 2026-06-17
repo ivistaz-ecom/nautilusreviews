@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nautilus Shipping — Staff Feedback Survey</title>
+<style>
+  :root {
+    --navy: #0a2240;
+    --blue: #1565c0;
+    --light-blue: #e8f0fe;
+    --accent: #f4a41a;
+    --green: #2e7d32;
+    --red: #c62828;
+    --gray: #f5f5f5;
+    --border: #dde3ea;
+    --text: #1a1a2e;
+    --muted: #5f6b7a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #eef2f7; color: var(--text); min-height: 100vh; }
+
+  header { background: var(--navy); color: white; padding: 18px 32px; display: flex; align-items: center; gap: 18px; }
+  header .header-text .tagline { font-size: 13px; color: #aac4e8; margin-top: 3px; letter-spacing: 0.3px; }
+
+  .tabs { background: white; border-bottom: 2px solid var(--border); display: flex; padding: 0 32px; }
+  .tab { padding: 14px 24px; cursor: pointer; font-size: 14px; font-weight: 600; color: var(--muted); border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all 0.2s; }
+  .tab.active { color: var(--blue); border-bottom-color: var(--blue); }
+  .tab:hover:not(.active) { color: var(--text); }
+
+  .container { max-width: 860px; margin: 32px auto; padding: 0 16px 48px; }
+
+  .card { background: white; border-radius: 10px; border: 1px solid var(--border); padding: 28px 32px; margin-bottom: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .card-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--blue); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+
+  .form-row { margin-bottom: 20px; }
+  label { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  label .required { color: var(--red); margin-left: 2px; }
+  label .hint { font-weight: 400; color: var(--muted); font-size: 12px; margin-left: 4px; }
+  input[type="text"], select, textarea { width: 100%; padding: 10px 13px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; font-family: inherit; color: var(--text); background: white; transition: border 0.2s; }
+  input[type="text"]:focus, select:focus, textarea:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(21,101,192,0.1); }
+  textarea { min-height: 85px; resize: vertical; }
+
+  /* Staff picker checkboxes */
+  .staff-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; margin-top: 8px; }
+  .staff-check-item { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border: 2px solid var(--border); border-radius: 8px; cursor: pointer; transition: all 0.15s; }
+  .staff-check-item:hover { border-color: var(--blue); background: var(--light-blue); }
+  .staff-check-item.selected { border-color: var(--blue); background: var(--light-blue); }
+  .staff-check-item input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--blue); cursor: pointer; flex-shrink: 0; }
+  .staff-check-item .staff-info { line-height: 1.3; }
+  .staff-check-item .staff-name { font-size: 14px; font-weight: 600; }
+  .staff-check-item .staff-team { font-size: 11px; color: var(--muted); }
+  .staff-group-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--muted); margin: 14px 0 6px; }
+
+  /* Per-staff feedback sections */
+  .staff-section {
+    border: 2px solid var(--blue);
+    border-radius: 10px;
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .staff-section-header {
+    background: var(--navy);
+    color: white;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .staff-section-header .sname { font-size: 16px; font-weight: 700; }
+  .staff-section-header .steam { font-size: 12px; color: #aac4e8; }
+  .staff-section-body { padding: 24px; background: white; }
+
+  /* Rating scale */
+  .rating-row { margin-bottom: 20px; }
+  .rating-label { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+  .rating-desc { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+  .stars { display: flex; gap: 6px; flex-wrap: wrap; }
+  .stars input[type="radio"] { display: none; }
+  .stars label { cursor: pointer; font-size: 13px; font-weight: 600; padding: 6px 14px; border-radius: 20px; border: 2px solid var(--border); color: var(--muted); transition: all 0.15s; white-space: nowrap; margin: 0; }
+  .stars label:hover { border-color: var(--blue); color: var(--blue); background: var(--light-blue); }
+  .stars input[type="radio"]:checked + label { background: var(--blue); border-color: var(--blue); color: white; }
+
+  .btn { display: inline-block; padding: 12px 32px; border-radius: 6px; font-size: 15px; font-weight: 700; cursor: pointer; border: none; transition: all 0.2s; }
+  .btn-primary { background: var(--blue); color: white; }
+  .btn-primary:hover { background: #0d47a1; }
+  .btn-danger { background: var(--red); color: white; padding: 8px 18px; font-size: 13px; }
+  .btn-danger:hover { background: #b71c1c; }
+
+  .notice { padding: 12px 16px; border-radius: 6px; font-size: 13px; margin-bottom: 20px; display: none; }
+  .notice.success { background: #e8f5e9; border: 1px solid #a5d6a7; color: var(--green); display: block; }
+  .notice.error { background: #ffebee; border: 1px solid #ef9a9a; color: var(--red); display: block; }
+
+  .step-indicator { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; font-size: 13px; color: var(--muted); }
+  .step-dot { width: 28px; height: 28px; border-radius: 50%; background: var(--light-blue); color: var(--blue); font-weight: 800; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+  .step-dot.active { background: var(--blue); color: white; }
+  .step-line { flex: 1; height: 2px; background: var(--border); }
+
+  #sections-container { display: none; }
+  .no-staff-msg { text-align: center; color: var(--muted); padding: 24px; font-size: 14px; font-style: italic; }
+
+  /* Review tab */
+  .review-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+  .review-header h2 { font-size: 18px; font-weight: 700; }
+  .review-filters { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; align-items: center; }
+  .review-filters select, .review-filters input { width: auto; min-width: 160px; padding: 8px 12px; font-size: 13px; }
+
+  .response-card { background: white; border: 1px solid var(--border); border-radius: 8px; padding: 20px 24px; margin-bottom: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+  .rc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
+  .rc-name { font-size: 17px; font-weight: 700; color: var(--navy); }
+  .rc-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .rc-date { font-size: 12px; color: var(--muted); }
+
+  .ratings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; margin-bottom: 14px; }
+  .rating-chip { background: var(--gray); border-radius: 6px; padding: 8px 12px; }
+  .rating-chip .rc-cat { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .rating-chip .rc-score { font-size: 18px; font-weight: 800; margin-top: 2px; }
+  .score-1, .score-2 { color: var(--red); }
+  .score-3 { color: #e65100; }
+  .score-4 { color: #2e7d32; }
+  .score-5 { color: #1565c0; }
+
+  .qual-section { margin-top: 10px; }
+  .qual-q { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 3px; }
+  .qual-a { font-size: 14px; color: var(--text); margin-bottom: 10px; font-style: italic; }
+
+  .avg-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 800; background: var(--light-blue); color: var(--blue); white-space: nowrap; }
+
+  .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
+  .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+  .empty-state h3 { font-size: 17px; margin-bottom: 6px; color: var(--text); }
+
+  .summary-bar { background: var(--navy); color: white; border-radius: 8px; padding: 16px 24px; display: flex; gap: 32px; flex-wrap: wrap; margin-bottom: 20px; }
+  .summary-stat { text-align: center; }
+  .summary-stat .val { font-size: 26px; font-weight: 800; color: var(--accent); }
+  .summary-stat .lbl { font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: #aac4e8; margin-top: 2px; }
+
+  .export-btn { background: var(--accent); color: var(--navy); border: none; padding: 9px 20px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; }
+  .export-btn:hover { background: #f5b53a; }
+
+  .submission-badge { display: inline-block; background: #e8f0fe; color: var(--blue); font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px; margin-left: 8px; vertical-align: middle; }
+
+  @media (max-width: 600px) {
+    .container { padding: 0 8px 48px; }
+    .card { padding: 18px 16px; }
+    header { padding: 14px 16px; }
+    .tabs { padding: 0 8px; }
+    .staff-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <!-- Nautilus Shipping Logo -->
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80" width="90" height="60" style="flex-shrink:0;">
+    <!-- Ship funnel (teal) -->
+    <path d="M52 8 Q52 4 56 4 L68 4 Q72 4 72 8 L72 38 Q65 44 58 40 Q52 36 52 30 Z" fill="#00b4c8"/>
+    <path d="M52 30 Q52 36 58 40 Q65 44 72 38 L72 42 Q65 48 58 44 Q50 40 50 33 Z" fill="#009ab0"/>
+    <!-- Swoosh (dark teal/navy) -->
+    <path d="M30 48 Q55 28 110 18 Q115 17 118 20 Q115 24 108 26 Q72 38 58 44 Q44 52 38 62 Q30 58 30 48 Z" fill="#0d4f6e"/>
+    <path d="M30 48 Q36 52 38 62 Q30 66 22 60 Q18 54 22 50 Z" fill="#0a3d56"/>
+  </svg>
+  <div class="header-text">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 42" width="200" height="38">
+      <text x="0" y="28" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="28" fill="#ffffff" letter-spacing="2">NAUTILUS</text>
+      <text x="2" y="40" font-family="Arial, sans-serif" font-weight="400" font-size="11" fill="#7eb8d4" letter-spacing="7">SHIPPING</text>
+    </svg>
+    <div class="tagline">Seafarer Feedback Survey</div>
+  </div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('survey')">📝 Submit Feedback</div>
+  <div class="tab" onclick="showTab('review')">📊 Review Responses</div>
+</div>
+
+<!-- ==================== SURVEY TAB ==================== -->
+<div id="tab-survey" class="container">
+
+  <div id="notice" class="notice"></div>
+
+  <div class="card" style="border-left: 4px solid #00b4c8; background: linear-gradient(135deg, #fff 0%, #f0f8fc 100%);">
+    <p style="font-size:15px; line-height:1.7; color:var(--text);">
+      At Nautilus Shipping, we deeply value your feedback. Our crew are at the heart of everything we do, and we want to understand how our Crewing and Operations teams have supported you throughout your time with us. Your honest responses help us recognise great service and identify where we can do better — so please take a few minutes to share your experience.
+    </p>
+  </div>
+
+  <!-- STEP 1: Seafarer details -->
+  <div class="card">
+    <div class="card-title">Step 1 — Your Details</div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;" class="two-col">
+      <div class="form-row">
+        <label>Vessel <span class="required">*</span></label>
+        <select id="vessel">
+          <option value="">— Select your vessel —</option>
+          <option>JSW MIHIRGAD</option>
+          <option>JSW FATEHGAD</option>
+          <option>JSW ROHETGAD</option>
+          <option>JSW MALHARGAD</option>
+          <option>JSW ARJUNGAD</option>
+          <option>JSW VISHALGAD</option>
+          <option>JSW UDAIGAD</option>
+          <option>JSW VAJRAGAD</option>
+          <option>JSW RATANGAD</option>
+          <option>JSW DEVGAD</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label>Your Rank / Role</label>
+        <select id="rank">
+          <option value="">— Select rank —</option>
+          <optgroup label="Deck Officers">
+            <option>Master / Captain</option>
+            <option>Chief Officer (C/O)</option>
+            <option>Second Officer (2/O)</option>
+            <option>Third Officer (3/O)</option>
+          </optgroup>
+          <optgroup label="Engine Officers">
+            <option>Chief Engineer (C/E)</option>
+            <option>Second Engineer (2/E)</option>
+            <option>Third Engineer (3/E)</option>
+            <option>Fourth Engineer (4/E)</option>
+          </optgroup>
+          <optgroup label="Ratings">
+            <option>Bosun</option>
+            <option>Able Seaman (AB)</option>
+            <option>Ordinary Seaman (OS)</option>
+            <option>Oiler / Motorman</option>
+            <option>Cook / Steward</option>
+            <option>Other Rating</option>
+          </optgroup>
+        </select>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- STEP 2: Pick staff -->
+  <div class="card">
+    <div class="card-title">Step 2 — Select Staff You Dealt With <span class="required">*</span></div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Tick everyone you had direct dealings with. You'll rate each one separately below.</p>
+
+    <div class="staff-grid" id="all-staff-grid">
+      <!-- populated by JS -->
+    </div>
+  </div>
+
+  <!-- STEP 3: Individual sections per staff -->
+  <div id="sections-container">
+    <div class="card" style="border-left:4px solid var(--blue);padding:16px 24px;">
+      <div style="font-size:14px;font-weight:700;color:var(--blue);">Step 3 — Rate Each Staff Member</div>
+      <div style="font-size:13px;color:var(--muted);margin-top:4px;">Complete the section below for each person you selected.</div>
+    </div>
+    <div id="individual-sections"></div>
+
+    <button class="btn btn-primary" onclick="submitForm()" style="width:100%;margin-top:4px;">Submit All Feedback</button>
+  </div>
+
+</div>
+
+<!-- ==================== REVIEW TAB ==================== -->
+<div id="tab-review" class="container" style="display:none;">
+
+  <div class="review-header">
+    <h2>All Submitted Feedback</h2>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="export-btn" onclick="exportCSV()">⬇ Export CSV</button>
+      <button class="btn btn-danger" style="padding:9px 18px;font-size:13px;" onclick="clearAll()">🗑 Clear All</button>
+    </div>
+  </div>
+
+  <div id="summary-bar" class="summary-bar" style="display:none;">
+    <div class="summary-stat"><div class="val" id="s-total">0</div><div class="lbl">Individual Reviews</div></div>
+    <div class="summary-stat"><div class="val" id="s-submissions">0</div><div class="lbl">Submissions</div></div>
+    <div class="summary-stat"><div class="val" id="s-avg">—</div><div class="lbl">Avg. Overall Rating</div></div>
+    <div class="summary-stat"><div class="val" id="s-staff">0</div><div class="lbl">Staff Reviewed</div></div>
+  </div>
+
+  <div class="review-filters">
+    <select id="filter-staff" onchange="renderReview()">
+      <option value="">All Staff Members</option>
+    </select>
+    <select id="filter-score" onchange="renderReview()">
+      <option value="">All Ratings</option>
+      <option value="5">5 — Excellent only</option>
+      <option value="4">4+ Good & above</option>
+      <option value="3">3 — Average only</option>
+      <option value="low">Below 3</option>
+    </select>
+    <input type="text" id="filter-search" placeholder="Search by vessel or name…" oninput="renderReview()" style="min-width:200px;">
+  </div>
+
+  <div id="responses-list"></div>
+</div>
+
+<script>
+const STORAGE_KEY = 'nautilus_feedback_v2';
+
+const STAFF = {
+  all: [
+    { id: 'capt_ravindra', name: 'Capt Ravindra Kumar Singh', role: '' },
+    { id: 'lakshita', name: 'Lakshita', role: '' },
+    { id: 'sanika', name: 'Sanika', role: '' },
+    { id: 'suhas', name: 'Suhas', role: '' },
+    { id: 'mithun', name: 'Mithun', role: '' },
+  ]
+};
+
+function getResponses() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+  catch { return []; }
+}
+function saveResponses(arr) { localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
+
+// Build staff checkboxes
+function buildStaffGrid() {
+  const grid = document.getElementById('all-staff-grid');
+  STAFF.all.forEach(s => {
+    const div = document.createElement('label');
+    div.className = 'staff-check-item';
+    div.innerHTML = `
+      <input type="checkbox" id="chk_${s.id}" value="${s.id}" onchange="updateSections()">
+      <div class="staff-info">
+        <div class="staff-name">${s.name}</div>
+      </div>`;
+    div.querySelector('input').addEventListener('change', function() {
+      div.classList.toggle('selected', this.checked);
+    });
+    grid.appendChild(div);
+  });
+}
+
+function getSelectedStaff() {
+  return [...document.querySelectorAll('.staff-check-item input:checked')]
+    .map(cb => STAFF.all.find(x => x.id === cb.value))
+    .filter(Boolean);
+}
+
+function updateSections() {
+  const selected = getSelectedStaff();
+  const container = document.getElementById('sections-container');
+  const sectionsDiv = document.getElementById('individual-sections');
+
+  if (selected.length === 0) {
+    container.style.display = 'none';
+    return;
+  }
+  container.style.display = 'block';
+
+  // Keep existing sections, add new, remove deselected
+  const existing = new Set([...sectionsDiv.querySelectorAll('[data-staff-id]')].map(el => el.dataset.staffId));
+  const selectedIds = new Set(selected.map(s => s.id));
+
+  // Remove deselected
+  sectionsDiv.querySelectorAll('[data-staff-id]').forEach(el => {
+    if (!selectedIds.has(el.dataset.staffId)) el.remove();
+  });
+
+  // Add new ones
+  selected.forEach((s, idx) => {
+    if (!existing.has(s.id)) {
+      const sec = document.createElement('div');
+      sec.className = 'staff-section';
+      sec.dataset.staffId = s.id;
+      sec.innerHTML = `
+        <div class="staff-section-header">
+          <div>
+            <div class="sname">${s.name}</div>
+          </div>
+        </div>
+        <div class="staff-section-body">
+          ${ratingBlock(s.id, 'r1', 'Responsiveness & Communication', 'How quickly and clearly did this person respond to your messages or requests?')}
+          ${ratingBlock(s.id, 'r2', 'Problem Resolution', 'How effectively did they handle issues or concerns you raised?')}
+          ${ratingBlock(s.id, 'r3', 'Professionalism & Attitude', 'Were they respectful, courteous, and professional in all dealings?')}
+          ${ratingBlock(s.id, 'r4', 'Knowledge & Competence', 'Did they demonstrate strong knowledge of crewing/operations matters?')}
+          ${ratingBlock(s.id, 'r5', 'Overall Satisfaction', 'Overall, how satisfied were you with their service?')}
+
+          <div style="border-top:1px solid var(--border);margin:20px 0 16px;"></div>
+
+          <div class="form-row">
+            <label>What did ${s.name.split(' ')[0]} do well? <span class="required">*</span></label>
+            <textarea id="${s.id}_well" placeholder="Specific examples of good service, support, or communication…"></textarea>
+          </div>
+          <div class="form-row">
+            <label>What could they improve?</label>
+            <textarea id="${s.id}_improve" placeholder="Constructive suggestions…"></textarea>
+          </div>
+          <div class="form-row">
+            <label>Any specific incident to highlight?</label>
+            <textarea id="${s.id}_incident" placeholder="Optional — a particular interaction that stood out…" style="min-height:65px;"></textarea>
+          </div>
+        </div>`;
+      sectionsDiv.appendChild(sec);
+    }
+  });
+}
+
+function ratingBlock(sid, rkey, title, desc) {
+  const name = `${sid}_${rkey}`;
+  const opts = [1,2,3,4,5];
+  const labels = ['1 — Poor','2 — Below avg.','3 — Average','4 — Good','5 — Excellent'];
+  return `<div class="rating-row">
+    <div class="rating-label">${title}</div>
+    <div class="rating-desc">${desc}</div>
+    <div class="stars">
+      ${opts.map((v,i) => `<input type="radio" name="${name}" id="${name}_${v}" value="${v}"><label for="${name}_${v}">${labels[i]}</label>`).join('')}
+    </div>
+  </div>`;
+}
+
+function getRadioValue(name) {
+  const el = document.querySelector(`input[name="${name}"]:checked`);
+  return el ? el.value : null;
+}
+
+function showNotice(msg, type) {
+  const n = document.getElementById('notice');
+  n.textContent = msg;
+  n.className = 'notice ' + type;
+  setTimeout(() => { n.className = 'notice'; }, 6000);
+}
+
+function submitForm() {
+  const vessel = document.getElementById('vessel').value.trim();
+  const selected = getSelectedStaff();
+
+  if (!vessel) return showNotice('Please select your vessel.', 'error');
+  if (selected.length === 0) return showNotice('Please select at least one staff member.', 'error');
+
+  const submissionId = 'S' + Date.now();
+  const timestamp = new Date().toISOString();
+  const rank = document.getElementById('rank').value || 'Not specified';
+
+  const records = [];
+  for (const s of selected) {
+    const r1 = getRadioValue(`${s.id}_r1`);
+    const r2 = getRadioValue(`${s.id}_r2`);
+    const r3 = getRadioValue(`${s.id}_r3`);
+    const r4 = getRadioValue(`${s.id}_r4`);
+    const r5 = getRadioValue(`${s.id}_r5`);
+    const well = document.getElementById(`${s.id}_well`).value.trim();
+
+    if (!r1||!r2||!r3||!r4||!r5) return showNotice(`Please complete all ratings for ${s.name}.`, 'error');
+    if (!well) return showNotice(`Please fill in what ${s.name.split(' ')[0]} did well.`, 'error');
+
+    records.push({
+      id: submissionId + '_' + s.id,
+      submissionId,
+      timestamp,
+      staff: `${s.name} — ${s.role}`,
+      staffId: s.id,
+      staffName: s.name,
+      staffRole: s.role,
+      staffTeam: 'Nautilus Shipping',
+      vessel,
+      rank,
+      ratings: {
+        responsiveness: parseInt(r1),
+        resolution: parseInt(r2),
+        professionalism: parseInt(r3),
+        knowledge: parseInt(r4),
+        overall: parseInt(r5)
+      },
+      qualitative: {
+        well,
+        improve: document.getElementById(`${s.id}_improve`).value.trim(),
+        incident: document.getElementById(`${s.id}_incident`).value.trim()
+      }
+    });
+  }
+
+  const all = getResponses();
+  records.forEach(r => all.push(r));
+  saveResponses(all);
+
+  // Reset form
+  document.getElementById('vessel').value = '';
+  document.getElementById('rank').value = '';
+  document.querySelectorAll('.staff-check-item input').forEach(cb => { cb.checked = false; cb.closest('.staff-check-item').classList.remove('selected'); });
+  document.getElementById('individual-sections').innerHTML = '';
+  document.getElementById('sections-container').style.display = 'none';
+
+  showNotice(`✓ Feedback submitted for ${records.length} staff member${records.length>1?'s':''}. Thank you!`, 'success');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+// Review tab
+function showTab(tab) {
+  document.getElementById('tab-survey').style.display = tab === 'survey' ? '' : 'none';
+  document.getElementById('tab-review').style.display = tab === 'review' ? '' : 'none';
+  document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', (i === 0) === (tab === 'survey')));
+  if (tab === 'review') renderReview();
+}
+
+function renderReview() {
+  const all = getResponses();
+  const filterStaff = document.getElementById('filter-staff').value;
+  const filterScore = document.getElementById('filter-score').value;
+  const filterSearch = document.getElementById('filter-search').value.toLowerCase();
+
+  // Staff filter dropdown
+  const staffNames = [...new Set(all.map(r => r.staff))].sort();
+  const sf = document.getElementById('filter-staff');
+  const cur = sf.value;
+  sf.innerHTML = '<option value="">All Staff Members</option>';
+  staffNames.forEach(n => {
+    const o = document.createElement('option');
+    o.value = n; o.textContent = n;
+    if (n === cur) o.selected = true;
+    sf.appendChild(o);
+  });
+
+  // Summary
+  const sb = document.getElementById('summary-bar');
+  if (all.length > 0) {
+    sb.style.display = 'flex';
+    document.getElementById('s-total').textContent = all.length;
+    const uniqueSubs = new Set(all.map(r => r.submissionId)).size;
+    document.getElementById('s-submissions').textContent = uniqueSubs;
+    const avgAll = all.reduce((a, r) => a + r.ratings.overall, 0) / all.length;
+    document.getElementById('s-avg').textContent = avgAll.toFixed(1) + ' / 5';
+    document.getElementById('s-staff').textContent = new Set(all.map(r => r.staffId)).size;
+  } else {
+    sb.style.display = 'none';
+  }
+
+  let filtered = all;
+  if (filterStaff) filtered = filtered.filter(r => r.staff === filterStaff);
+  if (filterSearch) filtered = filtered.filter(r =>
+    r.vessel.toLowerCase().includes(filterSearch));
+  if (filterScore === '5') filtered = filtered.filter(r => r.ratings.overall === 5);
+  else if (filterScore === '4') filtered = filtered.filter(r => r.ratings.overall >= 4);
+  else if (filterScore === '3') filtered = filtered.filter(r => r.ratings.overall === 3);
+  else if (filterScore === 'low') filtered = filtered.filter(r => r.ratings.overall < 3);
+
+  filtered = [...filtered].reverse();
+
+  const list = document.getElementById('responses-list');
+  if (filtered.length === 0) {
+    list.innerHTML = `<div class="empty-state">
+      <div class="icon">📋</div>
+      <h3>${all.length === 0 ? 'No feedback submitted yet' : 'No responses match your filters'}</h3>
+      <p>${all.length === 0 ? 'Responses appear here once seafarers submit the form.' : 'Try clearing the filters.'}</p>
+    </div>`;
+    return;
+  }
+
+  const cats = [['responsiveness','Responsiveness'],['resolution','Problem Resolution'],['professionalism','Professionalism'],['knowledge','Knowledge'],['overall','Overall']];
+
+  list.innerHTML = filtered.map(r => {
+    const avg = (Object.values(r.ratings).reduce((a,b)=>a+b,0)/Object.values(r.ratings).length).toFixed(1);
+    const date = new Date(r.timestamp).toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'});
+    const chips = cats.map(([k,label]) => `
+      <div class="rating-chip">
+        <div class="rc-cat">${label}</div>
+        <div class="rc-score score-${r.ratings[k]}">${r.ratings[k]}/5</div>
+      </div>`).join('');
+
+    // Find how many staff were in same submission
+    const siblingCount = all.filter(x => x.submissionId === r.submissionId).length;
+    const multiNote = siblingCount > 1 ? `<span class="submission-badge">+${siblingCount-1} others in this submission</span>` : '';
+
+    return `<div class="response-card">
+      <div class="rc-header">
+        <div>
+          <div class="rc-name">${escHtml(r.staffName)} ${multiNote}</div>
+          <div class="rc-meta">${escHtml(r.rank)} · ${escHtml(r.vessel)}</div>
+        </div>
+        <div style="text-align:right;">
+          <span class="avg-badge">Avg: ${avg}/5</span>
+          <div class="rc-date" style="margin-top:4px;">${date}</div>
+        </div>
+      </div>
+      <div class="ratings-grid">${chips}</div>
+      <div class="qual-section">
+        <div class="qual-q">What they did well</div>
+        <div class="qual-a">"${escHtml(r.qualitative.well)}"</div>
+        ${r.qualitative.improve ? `<div class="qual-q">Areas to improve</div><div class="qual-a">"${escHtml(r.qualitative.improve)}"</div>` : ''}
+        ${r.qualitative.incident ? `<div class="qual-q">Specific incident</div><div class="qual-a">"${escHtml(r.qualitative.incident)}"</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function escHtml(str) {
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function clearAll() {
+  if (confirm('Delete ALL saved responses? This cannot be undone.')) {
+    localStorage.removeItem(STORAGE_KEY);
+    renderReview();
+  }
+}
+
+function exportCSV() {
+  const all = getResponses();
+  if (!all.length) return alert('No responses to export.');
+  const headers = ['Date','Submission ID','Staff Member','Team','Rank','Vessel',
+    'Responsiveness','Problem Resolution','Professionalism','Knowledge','Overall','Average Score',
+    'What They Did Well','Areas to Improve','Specific Incident'];
+  const rows = all.map(r => {
+    const avg = (Object.values(r.ratings).reduce((a,b)=>a+b,0)/Object.values(r.ratings).length).toFixed(2);
+    return [
+      new Date(r.timestamp).toLocaleDateString('en-GB'), r.submissionId,
+      r.staffName, r.staffTeam, r.rank, r.vessel,
+      r.ratings.responsiveness, r.ratings.resolution, r.ratings.professionalism,
+      r.ratings.knowledge, r.ratings.overall, avg,
+      r.qualitative.well, r.qualitative.improve, r.qualitative.incident
+    ].map(v => `"${String(v||'').replace(/"/g,'""')}"`);
+  });
+  const csv = [headers.map(h=>`"${h}"`), ...rows].map(r=>r.join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `nautilus_staff_feedback_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+
+// Init
+buildStaffGrid();
+</script>
+</body>
+</html>
