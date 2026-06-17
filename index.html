@@ -385,7 +385,9 @@ function updateSections() {
               placeholder="Specific examples of good service, support, or communication…"></textarea>
           </div>
           <div class="form-row">
-            <label>What could they improve?</label>
+            <label>What could they improve?
+              <span class="required">*</span>
+            </label>
             <textarea id="txt_${s.id}_improve"
               placeholder="Constructive suggestions…"></textarea>
           </div>
@@ -410,7 +412,7 @@ function ratingBlock(sid, rkey, title, desc) {
   ).join('');
   return `
     <div class="rating-row">
-      <div class="rating-label">${title}</div>
+      <div class="rating-label">${title} <span class="required">*</span></div>
       <div class="rating-desc">${desc}</div>
       <div class="stars">${opts}</div>
     </div>`;
@@ -447,6 +449,9 @@ async function submitForm() {
     }
     if (!well) {
       return showNotice(`Please fill in what ${s.full_name.split(' ')[0]} did well.`, 'error');
+    }
+    if (!improve) {
+      return showNotice(`Please fill in what ${s.full_name.split(' ')[0]} could improve.`, 'error');
     }
 
     staff_ratings.push({
