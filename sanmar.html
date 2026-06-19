@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nautilus Shipping — JSW — Staff Feedback Survey</title>
+<title>Nautilus Shipping — Sanmar — Staff Feedback Survey</title>
 <style>
   :root {
     --navy: #0a2240; --blue: #1565c0; --light-blue: #e8f0fe;
@@ -146,12 +146,12 @@
   </header>
 
 <!-- <div class="tabs">
-  <div class="tab" onclick="showTab('survey')">📝 Submit Feedback</div>
-  <div class="tab active"        onclick="showTab('review')">📊 Review Responses</div>
+  <div class="tab active" onclick="showTab('survey')">📝 Submit Feedback</div>
+  <div class="tab"        onclick="showTab('review')">📊 Review Responses</div>
 </div> -->
 
 <!-- ===================== SURVEY TAB ===================== -->
-<div id="tab-survey" class="container" style="display:none;">
+<div id="tab-survey" class="container">
 
   <div id="notice" class="notice"></div>
 
@@ -170,22 +170,11 @@
         <label>Vessel <span class="required">*</span></label>
         <select id="vessel">
           <option value="">— Select your vessel —</option>
-          <option>SSL THAMIRABARANI</option>
-          <option>SSL GUJARAT</option>
-          <option>SSL KRISHNA</option>
-          <option>SSL MUMBAI</option>
-          <option>SSL SABARIMALAI</option>
-          <option>SSL BHARAT</option>
-          <option>SSL KAVERI</option>
-          <option>SSL VISAKHAPATNAM</option>
-          <option>SSL BRAHMAPUTRA</option>
-          <option>TBC PRAISE</option>
-          <option>TBC PRIME</option>
-          <option>TBC KAILASH</option>
-          <option>SSL GODAVARI</option>
-          <option>TBC BADRINATH</option>
-          <option>TBC PASSION</option>
-          <option>OEL RUDRA</option>
+          <option>Sanmar Royal</option>
+          <option>Sanmar Regent</option>
+          <option>Sanmar Regina</option>
+          <option>Sanmar Raga</option>
+          <option>Sanmar Ragini</option>
         </select>
       </div>
       <div class="form-row">
@@ -245,7 +234,7 @@
 </div>
 
 <!-- ===================== REVIEW TAB ===================== -->
-<div id="tab-review" class="container">
+<div id="tab-review" class="container" style="display:none;">
 
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
     <h2 style="font-size:18px;font-weight:700;">All Submitted Feedback</h2>
@@ -282,14 +271,13 @@
 <script>
 // ── CONFIG — change these two values to match your setup ─────────────────────
 const API_BASE  = '/api.php';      // api.php is at public_html/api.php
-const FORM_CODE = 'TW';          // unique code for this form
+const FORM_CODE = 'SNR';          // unique code for this form
 
 // ── State ─────────────────────────────────────────────────────────────────────
 let STAFF = [];   // loaded from API
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 loadStaff();
-loadReview();
 
 // ── LOAD STAFF FROM API ───────────────────────────────────────────────────────
 async function loadStaff() {
